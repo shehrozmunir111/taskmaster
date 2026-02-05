@@ -1,6 +1,6 @@
 # TaskMaster
 
-TaskMaster is a professional-grade Task Management API designed for high scalability and secure enterprise use. Built with a focus on modern backend architecture, it utilizes **FastAPI**, **PostgreSQL**, and **Redis** to deliver real-time performance and reliability.
+TaskMaster is a professional grade Task Management API designed for high scalability and secure enterprise use. Built with a focus on modern backend architecture, it utilizes **FastAPI**, **PostgreSQL**, and **Redis** to deliver real-time performance and reliability.
 
 ## Projects Highlights
 
