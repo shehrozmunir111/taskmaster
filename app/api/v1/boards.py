@@ -50,11 +50,6 @@ async def create_lane(
     service = BoardService(db, user.get('id'))
     return service.create_lane(board_id, lane)
 
-# Note: Updating/Deleting lanes typically done by Lane ID directly, not nested URL
-# We define a separate router or mix here. For simplicity, let's keep lane ops here too but with top-level paths if preferred,
-# or strictly hierarchical. Trello usually treats them as independent resources once created.
-# I'll expose top-level lane endpoints below for easier direct access.
-
 @router.put("/lanes/{lane_id}", response_model=LaneResponse)
 async def update_lane(
     lane_id: int,

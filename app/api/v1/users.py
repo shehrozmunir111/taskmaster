@@ -21,7 +21,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 admin_dependency = Annotated[dict, Depends(RoleChecker(["admin"]))]
 
-@router.get("/", response_model=list[UserResponse])
+@router.get("/", response_model=list[UserResponse], tags=["Admin"])
 async def read_all_users(db: db_dependency, admin: admin_dependency):
     """
     Retrieve all users. (Admin Only)
@@ -63,6 +63,7 @@ async def read_current_user(db: db_dependency, user: user_dependency):
 @router.get("/{user_id}", response_model=UserResponse)
 async def read_user(
     db: db_dependency, 
+    user: user_dependency,
     user_id: int = Path(gt=0)
 ):
     """
@@ -71,16 +72,16 @@ async def read_user(
     from fastapi import HTTPException
     
     user_service = UserService(db)
-    user = user_service.get_user_by_id(user_id)
-    if not user:
+    user_obj = user_service.get_user_by_id(user_id)
+    if not user_obj:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
+    return user_obj
 
 
 @router.put("/{user_id}", response_model=UserResponse)
 async def update_user(
     db: db_dependency,
-    user: user_dependency,  # Require auth
+    user: user_dependency,
     user_update: UserUpdate,
     user_id: int = Path(gt=0)
 ):
@@ -104,7 +105,7 @@ async def update_user(
 @router.delete("/{user_id}", response_model=UserResponse)
 async def deactivate_user(
     db: db_dependency,
-    user: user_dependency, # Require auth
+    user: user_dependency,
     user_id: int = Path(gt=0)
 ):
     """

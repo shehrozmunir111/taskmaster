@@ -84,6 +84,8 @@ def create_admin():
 def main():
     parser = argparse.ArgumentParser(description="TaskMaster Management CLI")
     parser.add_argument('command', choices=['init-db', 'create-admin'], help="Command to execute")
+    parser.add_argument('--email', help="Admin email for non-interactive creation")
+    parser.add_argument('--password', help="Admin password for non-interactive creation")
     
     if len(sys.argv) == 1:
         parser.print_help()
@@ -98,8 +100,28 @@ def main():
         else:
             print("Operation cancelled.")
             
-    elif args.command == 'create-admin':
-        create_admin()
+    if args.command == 'create-admin':
+        if args.email and args.password:
+            # Non-interactive mode
+            db = SessionLocal()
+            try:
+                hashed_pwd = hash_password(args.password)
+                new_admin = User(
+                    email=args.email,
+                    full_name="System Admin",
+                    hashed_password=hashed_pwd,
+                    role="admin",
+                    is_active=True
+                )
+                db.add(new_admin)
+                db.commit()
+                print(f"Admin user {args.email} created successfully (Non-interactive).")
+            except Exception as e:
+                print(f"Error: {e}")
+            finally:
+                db.close()
+        else:
+            create_admin()
 
 if __name__ == "__main__":
     main()
